@@ -5,11 +5,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/")
 public class HomeController {
 
-    @RequestMapping(value = "/main")
+    @RequestMapping(value = "main")
     public ModelAndView mainPage(ModelAndView mav){
         mav.setViewName("main");
         return mav;
     }
+
+
 }
