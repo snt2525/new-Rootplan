@@ -13,16 +13,25 @@ var geocoder = new kakao.maps.services.Geocoder();
 var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
     infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
 
+//사용자가 선택한 데이터에 관련돤 변수
+var user_place_latlng = new Array(10);
+var user_data_size = 0;
+var address;
+
 // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
 searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 
 // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
     searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+        var lat = mouseEvent.latLng.Ga;
+        var lng = mouseEvent.latLng.Ha;
+
         if (status === kakao.maps.services.Status.OK) {
             var detailAddr = !!result[0].road_address ? '<div>도로명주소 : ' + result[0].road_address.address_name + '</div>' : '';
             detailAddr += '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
+            address = result[0].address.address_name;
+            detailAddr += '<div><input type="button" name="selectPlace" value="장소 선택" onclick="selectPlace('+ lat + ',' + lng + ')"></div>';
             var content = detailAddr + '</div>';
 
             // 마커를 클릭한 위치에 표시합니다
@@ -64,4 +73,18 @@ function displayCenterInfo(result, status) {
             }
         }
     }
+}
+
+function selectPlace(lat , lng) {
+    user_place_latlng[user_data_size++] = {
+        lat: lat,
+        lng: lng,
+        address: address
+    };
+
+    var placeList = '';
+    for (var i in user_place_latlng) {
+        placeList += user_place_latlng[i].address +'<br>';
+    }
+    console.log(placeList)
 }
